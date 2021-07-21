@@ -23,10 +23,10 @@
   </tabbar>
 </template>
 <script>
-  import Tabbar from '@/components/common/tabbar/tabbar.vue'
-  import TabbarItem from '@/components/common/tabbar/tabbarItem.vue'
+  import Tabbar from '@/components/common/tabbar/Tabbar.vue'
+  import TabbarItem from '@/components/common/tabbar/TabbarItem.vue'
 export default {
-  name:"mainTabbar",
+  name:"MainTabbar",
   components:{
     Tabbar,
     TabbarItem

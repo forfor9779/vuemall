@@ -9,7 +9,7 @@
 </template>
 <script>
 export default {
-  name:"tabbarItem",
+  name:"TabbarItem",
   data() {
     return {
   

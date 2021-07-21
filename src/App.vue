@@ -7,10 +7,10 @@
   </div>
 </template>
 <script>
-  import mainTabbar from '@/components/content/mainTabbar.vue'
+  import MainTabbar from '@/components/content/MainTabbar.vue'
   export default{
     components:{
-      mainTabbar
+      MainTabbar
     }
  
   }
