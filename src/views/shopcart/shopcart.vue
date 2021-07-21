@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  name:'shopcart'
+  name:'ShopCart'
 }
 </script>
 <style lang="stylus">

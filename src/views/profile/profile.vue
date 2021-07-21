@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  name:'profile'
+  name:'Profile'
 }
 </script>
 <style lang="stylus">

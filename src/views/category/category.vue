@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  name:'cayegory'
+  name:'Cayegory'
 }
 </script>
 <style lang="stylus">
