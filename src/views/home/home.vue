@@ -1,18 +1,28 @@
 <template lang="">
   <div id="nav-home">
-    <NavBar>
+    <NavBar class="nav-bar">
       <div slot="center">购物街</div>
     </NavBar>
+    <HomeSwiper :banners=banners></HomeSwiper>
+    <HomeRecommend :recommends=recommends></HomeRecommend>
   </div>
 </template>
 <script>
+// 导入顶部导航组件
 import NavBar from '@/components/common/navbar/NavBar.vue'
+// 导入轮播图组件
+import HomeSwiper from '@/views/home/childComps/HomeSwiper.vue'
+// 导入推荐列表组件
+import HomeRecommend from './childComps/HomeRecommend.vue'
+
 import {getHomeMultidata} from '@/network/home'
 
 export default {
   name:'Home',
   components:{
-    NavBar
+    NavBar,
+    HomeSwiper,
+    HomeRecommend
   },
   // 网络请求过来的数据，在其函数结束时，会被回收，所以需要一个data来接受数据
   data() {
@@ -31,7 +41,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-  #nav-home{
+  .nav-bar{
     background-color: var(--color-tint);
     color: white;
   }

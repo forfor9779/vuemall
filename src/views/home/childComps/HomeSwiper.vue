@@ -1,0 +1,32 @@
+<!-- 主入口轮播图组件 -->
+<template lang="">
+    <Swiper>
+      <SwiperItem class="swiper-item" v-for="(item,index) in banners" :key="index">
+        <a :href="item.link">
+          <img :src="item.image" alt="">
+        </a>
+      </SwiperItem>
+    </Swiper>
+</template>
+<script>
+  import {Swiper,SwiperItem} from '@/components/common/swiper/index.js'
+export default {
+  name:'HomeSwiper',
+
+  props:{
+    banners:{
+      type:Array,
+      default(){
+        return []
+      }
+    }
+  },
+  components:{
+    Swiper,
+    SwiperItem
+  }
+}
+</script>
+<style lang="stylus">
+  
+</style>
