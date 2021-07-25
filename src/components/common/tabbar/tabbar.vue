@@ -18,7 +18,7 @@ export default {
     align-items: center;
     display: flex;
     justify-content:space-around;
-    position: absolute;
+    position: fixed;
      /* display：flex和position:absolute/flexd 一起使用会出问题 */
     /* 方案一：width: 100%; */
     /* 方案二： */
@@ -27,6 +27,5 @@ export default {
     bottom: 0px;
     background-color: #f6f6f6;
     box-shadow: 0 -1px 1px rgba(100,100,100,.2);
-   
   }
 </style>

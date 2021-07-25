@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <main-tabbar/>
-    </div>
     <router-view/>
+    
+    <main-tabbar/>
   </div>
 </template>
 <script>
