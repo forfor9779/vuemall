@@ -17,9 +17,10 @@ export default {
     width: 100%;
     line-height: 44px;
     box-shadow: 0px 1px 1px rgba(100, 100, 100, .1);
-    position: fixed;
+    /* 原生中，滚动时让NavBar位置固定，但是在better-scroll中不需要固定，因为滚动不包含该组件 */
+    /* position: fixed;
     top: 0px;
-    z-index: 999;
+    z-index: 999; */
   }
   .nav-left,.nav-right{
     /* width: 60px; */

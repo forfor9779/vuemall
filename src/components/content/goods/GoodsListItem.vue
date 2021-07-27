@@ -1,7 +1,7 @@
 <!-- 商品信息 -->
 <template lang="">
-  <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+  <div class="goods-item" @click="itemClick">
+    <img :src="goodsItem.show.img" alt="" @load="imgLoad">
     <div class="goods-mes">
       <p class="goods-info">{{goodsItem.title}}</p>
       <span class="goods-price">{{goodsItem.price}}</span>
@@ -19,7 +19,17 @@ export default {
         return []
       }
     }
-  }
+  },
+  methods: {
+    // 图片加载
+    imgLoad(){
+      this.$bus.$emit('itemImgLoad')
+    },
+    // 点击进入详情页
+    itemClick(){
+      this.$router.push('/detail/' + this.goodsItem.iid)
+    }
+  },
 }
 </script>
 <style lang="stylus" scoped>
