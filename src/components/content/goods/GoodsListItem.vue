@@ -1,7 +1,7 @@
 <!-- 商品信息 -->
 <template lang="">
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imgLoad">
+    <img :src="showImage" alt="" @load="imgLoad">
     <div class="goods-mes">
       <p class="goods-info">{{goodsItem.title}}</p>
       <span class="goods-price">{{goodsItem.price}}</span>
@@ -18,6 +18,11 @@ export default {
       default(){
         return []
       }
+    }
+  },
+  computed: {
+    showImage () {
+      return this.goodsItem.image || this.goodsItem.img || this.goodsItem.show.img
     }
   },
   methods: {

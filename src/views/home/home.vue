@@ -2,12 +2,11 @@
   <div id="nav-home">
     <NavBar class="nav-bar"><div slot="center">购物街</div></NavBar>
     <TabControl :titles="['流行', '新款', '精选']" 
-                  class="tabcontrol" 
-                  @tabClick="tClick"
-                  ref="tabcontrol1"
-                  v-show="isfixed"
-                  > 
-        </TabControl>
+                class="tabcontrol" 
+                @tabClick="tClick"
+                ref="tabcontrol1"
+                v-show="isfixed"> 
+    </TabControl>
     <Scroll class="content" 
             ref="scroll" 
             @scrollPosition ="contentPosition" 
@@ -21,8 +20,7 @@
                   :titles="['流行', '新款', '精选']" 
                   class="tabcontrol" 
                   @tabClick="tClick"
-                  ref="tabcontrol2"
-                  >
+                  ref="tabcontrol2">
       </TabControl>
       <GoodsList :goods="goods[currentTab].list"></GoodsList>
     </Scroll>
@@ -51,6 +49,8 @@ import BackTop from '@/components/content/backtop/BackTop.vue'
 import {getHomeMultidata,getGoods} from '@/network/home'
 // 导入防抖函数
 import {debounce} from "common/utils";
+// 导入混入
+import {itemListenerMixin} from 'common/mixin.js'
 
 
 export default {
@@ -67,6 +67,7 @@ export default {
     BackTop,
     debounce
   },
+  mixins:[itemListenerMixin],
   // 网络请求过来的数据，在其函数结束时，会被回收，所以需要一个data来接受数据
   data() {
     return {
@@ -125,10 +126,11 @@ export default {
 
         // refs不可以放在created里，因为在这个组件创建完成时，它的子组件还没有创建好，这时候可能会报错
         // 对于refresh非常频繁的问题, 进行防抖操作
-        const refresh =debounce(this.$refs.scroll.refresh, 50)
-        this.$bus.$on('itemImgLoad', () =>{
-          refresh()
-        })
+        // 使用混入，减少重复代码
+        // const refresh =debounce(this.$refs.scroll.refresh, 50)
+        // this.$bus.$on('itemImgLoad', () =>{
+        //   refresh()
+        // })
   },
   methods: {
     /*
