@@ -1,16 +1,18 @@
 <!-- 商品详情页面 -->
 <template lang="">
   <div id="detail">
-    <DetailNavBar class="nav-bar"></DetailNavBar>
-    <Scroll class="content" ref="scroll">
+    <DetailNavBar class="nav-bar" @detailTabClick="detailTabClick" ref="navbar"></DetailNavBar>
+    <Scroll class="content" ref="scroll" @scrollPosition='scrollPosition' :probe-type='3'>
       <DetailSwiper :swiperImg="swiperImg"></DetailSwiper>
       <DetailBaseInfo :goods=goods class="baseinfo"></DetailBaseInfo>
       <DetailShopInfo :shop=shop class="shopinfo"></DetailShopInfo>
       <DetailGoodsInfo :detailInfo="detailInfo" @infoImgLoad="infoImgLoad"></DetailGoodsInfo>
-      <DetailParamsInfo :paramsInfo="paramsInfo"></DetailParamsInfo>
-      <DetailCommentInfo :commentInfo="commentInfo"></DetailCommentInfo>
-      <GoodsList :goods="recommends" class="goodsList"></GoodsList>
+      <DetailParamsInfo :paramsInfo="paramsInfo" ref="params"></DetailParamsInfo>
+      <DetailCommentInfo :commentInfo="commentInfo" ref="comment"></DetailCommentInfo>
+      <GoodsList :goods="recommends" class="goodsList" ref="recommend"></GoodsList>
     </Scroll>
+    <BackTop class="back-top" @click.native="backtop" v-show="isshowBackTop"></BackTop>
+    <DetailBtnBar @addToCart='addToCart'></DetailBtnBar>
   </div>
 </template>
 <script>
@@ -21,12 +23,14 @@
   import DetailGoodsInfo from "./childComps/DetailGoodsInfo.vue"
   import DetailParamsInfo from "./childComps/DetailParamsInfo.vue"
   import DetailCommentInfo from "./childComps/DetailCommentInfo.vue"
+  import DetailBtnBar from "./childComps/DetailBtnBar.vue"
 
 
   import GoodsList from '@/components/content/goods/GoodsList'
   import Scroll from '@/components/common/scroll/Scroll'
+  // import BackTop from '@/components/content/backtop/BackTop.vue' 封装进mixin
 
-  import { itemListenerMixin } from "common/mixin.js"
+  import {itemListenerMixin,backTopMixin} from 'common/mixin.js'
 
   import {getDetail,Goods,Shop,GoodsParam,getRecommend} from '@/network/detail.js'
 export default {
@@ -39,11 +43,13 @@ export default {
     DetailGoodsInfo,
     DetailParamsInfo,
     DetailCommentInfo,
+    DetailBtnBar,
     GoodsList,
+    // BackTop,
 
     Scroll
   },
-  mixins:[itemListenerMixin],
+  mixins:[itemListenerMixin,backTopMixin],
   data() {
     return {
       iid:null,
@@ -53,7 +59,9 @@ export default {
       detailInfo:{},
       paramsInfo:{},
       commentInfo:{},
-      recommends:[]
+      recommends:[],
+      themeTopYs:[],
+      currentIndex:0
     }
   },
   created(){
@@ -87,10 +95,83 @@ export default {
     getRecommend().then( res => {
       this.recommends = res.data.list
     })
+
+    // this.$nextTick(() => { // 下一帧，此函数会等到组件dom渲染完后再调用，但组件中的图片并不一定加载完全
+    //   this.topYs = []  // 得到的offsetTop值不准确，大多数都是因为图片未加载的问题
+    //   this.topYs.push(0)
+    //   this.topYs.push(this.$refs.params.$el.offsetTop)
+    //   this.topYs.push(this.$refs.comment.$el.offsetTop)
+    //   this.topYs.push(this.$refs.recommend.$el.offsetTop)
+    // })
   },
   methods: {
     infoImgLoad(){
       this.$refs.scroll.refresh()
+
+      // 当子组件的图片加载完成以后，获取每个子组件的offsetTop
+      // 商品的offsetTop是0
+      // 我们已经给goodlistitem做过防抖，所以不用考虑调用了很多次的问题
+      this.themeTopYs.push(0)
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+      // 在数组末尾增加一个无限大的值，为了之后对数组做遍历
+      this.themeTopYs.push(Number.MAX_VALUE)
+      // console.log(this.themeTopYs);
+
+    },
+
+    // 点击navbar的某个主题，就是滚动到那个位置
+    detailTabClick(index){
+      this.$refs.scroll.backTop(0,-this.themeTopYs[index],1000)
+    },
+
+    // 获取滚动的位置，滚动到某个位置时，上面对应的标题就会变色
+    scrollPosition(position){
+      // position>= themeTopYs[0] && < themeTopYs[1]  currentIndex= 0
+      // position>=themeTopYs[1] && < themeTopYs[2]  currentIndex= 1
+      // position>= themeTopYs[2] && < themeTopYs[3]  currentIndex=2
+      // position>= themeTopYs[3] && < themeTopYs[4]  currentIndex=3
+      const scrollY = -position.y
+      const length = this.themeTopYs
+      // for in 里的i是字符串类型
+      // 如果数组只有4个数，是无法遍历到下标为4的
+      // 1.普通方法：
+      // for(let i in length){
+      //   if(this.currentIndex !== i && (i < length.length-1 && scrollY >= length[i*1] && scrollY < length[i*1+1]) 
+      //       || i == length.length-1 && scrollY >= length[i*1]){
+      //     this.currentIndex = i*1
+      //     this.$refs.navbar.currentIndex = this.currentIndex
+      //   }
+      // }
+
+      // 2.hack方法，在数组后面加一个无限大的值，并且遍历时只遍历到 i<length-1
+      for(let i=0 ; i<length.length-1 ; i++){
+        if (this.currentIndex !== i && (i < length.length-1 && scrollY >= length[i] && scrollY < length[i+1]) ) {
+          this.currentIndex = i
+          this.$refs.navbar.currentIndex = this.currentIndex
+        }
+      }
+
+      // 回到顶部
+      this.isshowBack(position)
+    },
+  
+    // 加入到购物车
+    addToCart(){
+      const product = {}
+      product.image = this.swiperImg[0]
+      product.title = this.goods.title
+      product.desc = this.goods.desc
+      product.price = this.goods.realPrice
+      // // iidy一定要传，因为id是商品的唯一标识
+      product.iid = this.iid 
+      console.log(product);
+
+      // commit是将product提交到store中mutations里的方法addCart
+      // this.$store.commit('addCart',product)
+      this.$store.dispatch('addCart',product)  // dispatch是提交到actions里去，再由actions分发commit到mutations里不同的方法中去
+
     }
   },
   destroyed () {

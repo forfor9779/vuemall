@@ -44,13 +44,13 @@ import GoodsList from '@/components/content/goods/GoodsList.vue'
 // 导入滚动样式
 import Scroll from '@/components/common/scroll/Scroll.vue'
 // 导入回到顶部组件
-import BackTop from '@/components/content/backtop/BackTop.vue'
+// import BackTop from '@/components/content/backtop/BackTop.vue' 封装进mixin
 
 import {getHomeMultidata,getGoods} from '@/network/home'
 // 导入防抖函数
 import {debounce} from "common/utils";
 // 导入混入
-import {itemListenerMixin} from 'common/mixin.js'
+import {itemListenerMixin,backTopMixin} from 'common/mixin.js'
 
 
 export default {
@@ -64,10 +64,10 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
+    // BackTop,
     debounce
   },
-  mixins:[itemListenerMixin],
+  mixins:[itemListenerMixin,backTopMixin],
   // 网络请求过来的数据，在其函数结束时，会被回收，所以需要一个data来接受数据
   data() {
     return {
@@ -80,7 +80,7 @@ export default {
         'sell':{page:0, list:[]}
       },
       currentTab:'pop',
-      isshowBackTop: false,
+      // isshowBackTop: false,
       tabControlTop:0,
       isfixed:false,
       saveY:0
@@ -155,17 +155,20 @@ export default {
     },
 
     // 回到顶部
-    backtop(){
-      this.$refs.scroll.backTop(0,0,300)
-    },
+    // backtop(){
+    //   this.$refs.scroll.backTop(0,0,300)
+    // },
 
     // 侦测实时位置，隐藏回到顶部
     contentPosition(position){
         // 1.判断BackTop是否显示
-      this.isshowBackTop = -(position.y) > 1000
+      // this.isshowBackTop = -(position.y) > 1000
+      this.isshowBack(position)
         // 2.决定tabControl是否吸顶(position: fixed)
       this.isfixed = -(position.y) > this.tabControlTop
     },
+
+    
 
     // 上拉加载更多
     LoadMore(){

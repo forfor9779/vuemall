@@ -30,6 +30,7 @@ export default {
   methods: {
     clickItem(index){
       this.currentIndex = index
+      this.$emit('detailTabClick',index)
     },
     // 后退一页
     backCilck(){
