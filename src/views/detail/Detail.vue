@@ -13,6 +13,7 @@
     </Scroll>
     <BackTop class="back-top" @click.native="backtop" v-show="isshowBackTop"></BackTop>
     <DetailBtnBar @addToCart='addToCart'></DetailBtnBar>
+    <Toase v-show="isShowMessage" :message="message"></Toase>
   </div>
 </template>
 <script>
@@ -28,6 +29,8 @@
 
   import GoodsList from '@/components/content/goods/GoodsList'
   import Scroll from '@/components/common/scroll/Scroll'
+  import Toase from '@/components/common/toase/Toase.vue'
+
   // import BackTop from '@/components/content/backtop/BackTop.vue' 封装进mixin
 
   import {itemListenerMixin,backTopMixin} from 'common/mixin.js'
@@ -47,7 +50,9 @@ export default {
     GoodsList,
     // BackTop,
 
-    Scroll
+    Scroll,
+    Toase,
+
   },
   mixins:[itemListenerMixin,backTopMixin],
   data() {
@@ -61,7 +66,9 @@ export default {
       commentInfo:{},
       recommends:[],
       themeTopYs:[],
-      currentIndex:0
+      currentIndex:0,
+      message:'',
+      isShowMessage:false
     }
   },
   created(){
@@ -117,7 +124,6 @@ export default {
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
       // 在数组末尾增加一个无限大的值，为了之后对数组做遍历
       this.themeTopYs.push(Number.MAX_VALUE)
-      // console.log(this.themeTopYs);
 
     },
 
@@ -166,12 +172,20 @@ export default {
       product.price = this.goods.realPrice
       // // iidy一定要传，因为id是商品的唯一标识
       product.iid = this.iid 
-      console.log(product);
 
       // commit是将product提交到store中mutations里的方法addCart
       // this.$store.commit('addCart',product)
       this.$store.dispatch('addCart',product)  // dispatch是提交到actions里去，再由actions分发commit到mutations里不同的方法中去
 
+      // 如果添加购物车成功,则输出模态框（用promise监视是否成功添加）
+      .then(res => {
+         this.message = res
+         this.isShowMessage = true
+         setTimeout(() => {
+           this.message = ""
+           this.isShowMessage = false
+         }, 2000);
+      })
     }
   },
   destroyed () {

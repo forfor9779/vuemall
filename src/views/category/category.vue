@@ -140,7 +140,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
   .wrapper{
-    height: 200px;
+    height: 600px;
     background-color: lightblue;
     overflow: hidden;
   }

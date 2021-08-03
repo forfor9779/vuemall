@@ -14,6 +14,7 @@ export default {
 </script>
 <style lang="stylus">
   #tabbar{
+    width: 100%;
     height: 49px;
     align-items: center;
     display: flex;
