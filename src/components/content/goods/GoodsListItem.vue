@@ -1,7 +1,7 @@
 <!-- 商品信息 -->
 <template lang="">
   <div class="goods-item" @click="itemClick">
-    <img :src="showImage" alt="" @load="imgLoad">
+    <img v-lazy="showImage" alt="" @load="imgLoad">
     <div class="goods-mes">
       <p class="goods-info">{{goodsItem.title}}</p>
       <span class="goods-price">{{goodsItem.price}}</span>
